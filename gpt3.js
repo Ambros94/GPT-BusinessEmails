@@ -24,12 +24,12 @@ function sendStream(message, id, string, body_data, idpopup, uuid) {
 
 async function promptGPT3Prompting(prompt, items, tabs) {
   console.log("promptGPT3Prompting ");
-  var text = prompt["prompt"]
-  var model = prompt["model"]
-  var temperature = prompt["temperature"]
-  var max_tokens = prompt["max_tokens"]
-  var popupID = prompt["popupID"] // may be undefined
-  var uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  const text = prompt["prompt"];
+  const model = prompt["model"];
+  const temperature = prompt["temperature"];
+  const max_tokens = prompt["max_tokens"];
+  const popupID = prompt["popupID"]; // may be undefined
+  const uuid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
   //send immediately text to the content script
   console.log(text, model, temperature, max_tokens);
@@ -82,4 +82,30 @@ async function promptGPT3Prompting(prompt, items, tabs) {
     });
 }
 
-export default promptGPT3Prompting;
+async function checkAPIKey(apikey) {
+  chrome.storage.sync.get('APIKEY', function (items) {
+    var url = "https://api.openai.com/v1/models";
+    fetch(url, {
+      method: 'GET', headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apikey
+      },
+    }).then(result => result.json())
+        .then((result) => {
+          console.log('Available models:', result);
+          // if result has data, then the API key is valid
+          if (result.data) {
+            chrome.runtime.sendMessage({message: 'API key is valid'});
+          } else {
+            chrome.runtime.sendMessage({message: 'API key is invalid'});
+          }
+
+        }).catch(err => {
+      console.log("error" + err);
+    });
+
+  })
+}
+
+export {promptGPT3Prompting, checkAPIKey};
