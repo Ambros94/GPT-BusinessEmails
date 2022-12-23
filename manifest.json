@@ -20,7 +20,7 @@
       "js": [
         "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
         "content.js",
-        "popup_world.js"
+        "content_popup.js"
       ]
     }
   ],
