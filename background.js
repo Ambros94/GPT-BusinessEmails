@@ -58,10 +58,10 @@ chrome.contextMenus.onClicked.addListener((info, tabs) => {
 
     // may be undefined
     let prompt = {};
-    let promptText = "Could you please expand on #TEXT#";
+    let promptText = "Rewrite this email with the style of a business email in UK English that is friendly, but still professional and appropriate for the workplace. The original email body is: #TEXT#";
     promptText = promptText.replaceAll('#TEXT#', info.selectionText);
     prompt["prompt"] = promptText;
-    prompt["max_tokens"] = 1024;
+    prompt["max_tokens"] = 4096;
     prompt["temperature"] = 0.1;// Use the right one
     prompt["model"] = "text-davinci-003";
 
