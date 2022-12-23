@@ -135,10 +135,6 @@ chrome.runtime.onInstalled.addListener(function () {
 
 // listen for a signal to refresh the context menu
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.text === "new_prompt_list") {
-        createContextMenu()
-        return;
-    }
     if (message.text === "checkAPIKey") {
         (async () => {
             await checkAPIKey(message.apiKey);
