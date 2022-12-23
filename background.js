@@ -137,14 +137,17 @@ chrome.runtime.onInstalled.addListener(function () {
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.text === "new_prompt_list") {
         createContextMenu()
-    } else if (message.text === "checkAPIKey") {
+        return;
+    }
+    if (message.text === "checkAPIKey") {
         (async () => {
             await checkAPIKey(message.apiKey);
         })();
-    } else if (message.text === "launchGPT") {
+        return
+    }
+    if (message.text === "launchGPT") {
         // get the tab from the sender
-
-        var tab = sender.tab;
+        const tab = sender.tab;
         console.log('launch GPT from', tab);
         chrome.storage.sync.get('APIKEY', function (items) {
             if (typeof items.APIKEY !== 'undefined') {
@@ -153,9 +156,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 })();
             }
         });
-    } else {
-        console.log(message);
+        return
     }
+    console.log("Received unknown message in background thread:" + message);
 });
 
 
