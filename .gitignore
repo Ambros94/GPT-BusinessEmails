@@ -1,0 +1,6 @@
+*.ico
+*.zip
+makezip.sh
+PrompterHistory*
+.idea
+node_modules
