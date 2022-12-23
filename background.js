@@ -19,7 +19,7 @@ function symbolFromModel(model) {
 }
 
 // FUNCTIONS DECLARATION
-async function checkGPT(apikey) {
+async function checkAPIKey(apikey) {
     chrome.storage.sync.get('APIKEY', function (items) {
         var url = "https://api.openai.com/v1/models";
         fetch(url, {
@@ -47,7 +47,7 @@ async function checkGPT(apikey) {
 
 
 //add a function to check if the API key is present in storage, if not set black icon
-function checkAPIKey() {
+function setIcon() {
     chrome.storage.sync.get('APIKEY', function (items) {
         // Check that the API key exists
         if (typeof items.APIKEY == 'undefined') {
@@ -99,8 +99,8 @@ function createContextMenu() {
 
 // Initial context menu creation, on install
 chrome.runtime.onInstalled.addListener(function () {
-    // check on installe if the API key is present in storage
-    checkAPIKey();
+    // check on install if the API key is present in storage
+    setIcon();
     // add one prompt to the storage
     chrome.storage.sync.get('customprompt', function (items) {
         // Check that the prompt exists
@@ -135,13 +135,13 @@ chrome.runtime.onInstalled.addListener(function () {
 
 // listen for a signal to refresh the context menu
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.text == "new_prompt_list") {
+    if (message.text === "new_prompt_list") {
         createContextMenu()
-    } else if (message.text == "checkAPIKey") {
+    } else if (message.text === "checkAPIKey") {
         (async () => {
-                await checkGPT(message.apiKey);
-            })();
-    } else if (message.text == "launchGPT") {
+            await checkAPIKey(message.apiKey);
+        })();
+    } else if (message.text === "launchGPT") {
         // get the tab from the sender
 
         var tab = sender.tab;
@@ -149,8 +149,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         chrome.storage.sync.get('APIKEY', function (items) {
             if (typeof items.APIKEY !== 'undefined') {
                 (async () => {
-                        await promptGPT3Prompting(message.prompt, items, tab);
-                    })();
+                    await promptGPT3Prompting(message.prompt, items, tab);
+                })();
             }
         });
     } else {
